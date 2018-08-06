@@ -1,0 +1,15 @@
+{
+  "name": "sinet_test",
+  "version": "0.0.1",
+  "description": "Test task for Sinet: linux tree command",
+  "main": "app.js",
+  "dependencies": {
+    "commander": "^2.17.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Prokopev Roman",
+  "license": "ISC"
+}
