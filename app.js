@@ -17,27 +17,38 @@ function safeReadDirSync (path, depth) {
     try {
         dirData = FS.readdirSync(path);
     } catch(ex) {
-        if (ex.code == "EACCES")
+        if (ex.code == "EPERM")
         //User does not have permissions, ignore directory
             return null;
         else throw ex;
     }
-    dirData.forEach(file => {
+    dirData.forEach((file, index) => {
         let stats;
         try {stats = FS.statSync(path + '/' +file); }
         catch (e) { return null; }
 
 
         if (stats.isDirectory()) {
-            console.log(depth + file);
-            safeReadDirSync(path + '/' +file, depth + '   ');
+            if (index + 1 == dirData.length) {
+                console.log(depth + '└' + file)
+            } else {
+                console.log(depth + '├' + file)
+            }
+            safeReadDirSync(path + '/' +file, depth + '│   ');
         }
         else if (stats.isFile()) {
             files.push(file);
         }
     });
 
-    files.forEach(file => console.log(depth + '-' + file));
+    files.forEach((file, index) => {
+        if (index + 1 == files.length) {
+            console.log(depth + '└' + file)
+        } else {
+            console.log(depth + '├' + file)
+        }
+
+    });
 }
 
 safeReadDirSync(folder, '');
