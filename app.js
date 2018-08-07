@@ -30,11 +30,12 @@ function safeReadDirSync (path, depth) {
 
         if (stats.isDirectory()) {
             if ((index + 1 == dirData.length) && (files.length == 0)) {
-                console.log(depth + '└─' + file);
+                console.log(depth + '└── ' + file);
+                safeReadDirSync(path + '/' +file, depth + '   ');
             } else {
-                console.log(depth + '├─' + file)
+                console.log(depth + '├── ' + file);
+                safeReadDirSync(path + '/' +file, depth + '│   ');
             }
-            safeReadDirSync(path + '/' +file, depth + '│   ');
         }
         else if (stats.isFile()) {
             files.push(file);
@@ -43,9 +44,9 @@ function safeReadDirSync (path, depth) {
 
     files.forEach((file, index) => {
         if (index + 1 == files.length) {
-            console.log(depth + '└─' + file)
+            console.log(depth + '└── ' + file);
         } else {
-            console.log(depth + '├─' + file)
+            console.log(depth + '├── ' + file);
         }
 
     });
