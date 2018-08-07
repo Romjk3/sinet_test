@@ -2,6 +2,7 @@
 
 const FS = require('fs');
 const COMMANDER = require('commander');
+const PATH = require('path');
 
 var folder = "./";
 
@@ -10,8 +11,9 @@ if (process.argv[2] != undefined) {
     folder = process.argv[2];
 }
 
-function safeReadDirSync (path, depth) {
+function safeReadDirSync (path) {
     let dirData = [];
+    let directories = [];
     let files = [];
 
     try {
@@ -22,34 +24,42 @@ function safeReadDirSync (path, depth) {
             return null;
         else throw ex;
     }
+
     dirData.forEach((file, index) => {
         let stats;
         try {stats = FS.statSync(path + '/' +file); }
         catch (e) { return null; }
 
-
         if (stats.isDirectory()) {
-            if ((index + 1 == dirData.length) && (files.length == 0)) {
-                console.log(depth + '└── ' + file);
-                safeReadDirSync(path + '/' +file, depth + '   ');
-            } else {
-                console.log(depth + '├── ' + file);
-                safeReadDirSync(path + '/' +file, depth + '│   ');
-            }
+            directories.push(safeReadDirSync(path + '/' +file));
         }
         else if (stats.isFile()) {
             files.push(file);
         }
     });
-
-    files.forEach((file, index) => {
-        if (index + 1 == files.length) {
-            console.log(depth + '└── ' + file);
-        } else {
-            console.log(depth + '├── ' + file);
-        }
-
-    });
+    path = PATH.basename(path);
+    return {path , directories, files};
 }
 
-safeReadDirSync(folder, '');
+function viewDir(item, depth, option){
+    item['directories'].forEach((element, index, arr) => {
+        if ((index + 1 == arr.length) && (item['files'].length == 0 || option == '-d')){
+            console.log(depth + '└── ' + element['path']);
+            viewDir(element, depth + '   ', option);
+        } else {
+            console.log(depth + '├── ' + element['path']);
+            viewDir(element, depth + '│   ', option);
+        }
+    });
+    if (option != '-d') {
+        item['files'].forEach((element, index, arr) => {
+            if (index + 1 == arr.length) {
+                console.log(depth + '└── ' + element);
+            } else {
+                console.log(depth + '├── ' + element);
+            }
+        });
+    }
+}
+
+viewDir(safeReadDirSync(folder), '', '-d');
