@@ -1,15 +1,15 @@
 'use strict';
 
 const FS = require('fs');
-const COMMANDER = require('commander');
+const program = require('commander');
 const PATH = require('path');
 
-var folder = "./";
+var folder = './';
 
 
-if (process.argv[2] != undefined) {
+/*if (process.argv[2] != undefined) {
     folder = process.argv[2];
-}
+}*/
 
 function safeReadDirSync (path) {
     let dirData = [];
@@ -25,7 +25,7 @@ function safeReadDirSync (path) {
         else throw ex;
     }
 
-    dirData.forEach((file, index) => {
+    dirData.forEach(file => {
         let stats;
         try {stats = FS.statSync(path + '/' +file); }
         catch (e) { return null; }
@@ -62,4 +62,27 @@ function viewDir(item, depth, option){
     }
 }
 
-viewDir(safeReadDirSync(folder), '', '-d');
+program
+    .version('0.0.1')
+    .description('sinet_test tree');
+
+program
+    .command('tree <path>')
+    .description('Show tree')
+    .option('-d, --directories','Only directories')
+    .action((path, options) => {
+        FS.stat(path, (err, stat) => {
+            let mode = options.directories ? '-d':'';
+            if ((err == null) &&  stat.isDirectory()){
+                viewDir(safeReadDirSync(path), '', mode);
+            } else if (stat.isFile()){
+                console.log('Вы указали файл');
+            } else if(err.code == 'ENOENT') {
+                console.log('Такого каталога не существует', err.code);
+            } else {
+                console.log('Some other error: ', err.code);
+            }
+        });
+    });
+
+program.parse(process.argv);
