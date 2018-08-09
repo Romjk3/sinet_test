@@ -4,13 +4,6 @@ const FS = require('fs');
 const program = require('commander');
 const PATH = require('path');
 
-var folder = './';
-
-
-/*if (process.argv[2] != undefined) {
-    folder = process.argv[2];
-}*/
-
 function safeReadDirSync (path) {
     let dirData = [];
     let directories = [];
@@ -67,13 +60,16 @@ program
     .description('sinet_test tree');
 
 program
-    .command('tree <path>')
+    .command('tree [path]')
     .description('Show tree')
     .option('-d, --directories','Only directories')
     .action((path, options) => {
+        if (path === undefined) path = '.';
+        console.log(path);
         FS.stat(path, (err, stat) => {
             let mode = options.directories ? '-d':'';
             if ((err == null) &&  stat.isDirectory()){
+                safeReadDirSync(path, '', '-d')['path'];
                 viewDir(safeReadDirSync(path), '', mode);
             } else if (stat.isFile()){
                 console.log('Вы указали файл');
