@@ -1,6 +1,6 @@
 {
-  "name": "sinet_test",
-  "version": "0.0.1",
+  "name": "sinet_tree",
+  "version": "1.0.0",
   "description": "Test task for Sinet: linux tree command",
   "main": "app.js",
   "dependencies": {
@@ -11,5 +11,16 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Prokopev Roman",
-  "license": "ISC"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Romjk3/sinet_test.git"
+  },
+  "keywords": [
+    "tree"
+  ],
+  "bugs": {
+    "url": "https://github.com/Romjk3/sinet_test/issues"
+  },
+  "homepage": "https://github.com/Romjk3/sinet_test#readme"
 }
